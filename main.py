@@ -114,8 +114,11 @@ logging.basicConfig(
 )
 
 try:
-    run_time = datetime(2026, 2, 15, 10, 16, 0)
+    run_time = datetime(2026, 2, 22, 14, 37, 0)
     scheduler.add_job(saver, 'date', run_date=run_time)
     scheduler.start()
+    log = Path("erro.log")
+    if log.exists() and log.stat().st_size == 0:
+        log.unlink()
 except Exception as e:
     logging.exception(e)
