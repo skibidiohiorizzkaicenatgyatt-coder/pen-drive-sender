@@ -40,7 +40,7 @@ def make_zips(folder: Path, max_size=MAX_SIZE):
         file_size = file.stat().st_size
 
         if file_size > max_size:
-            zip_path = Path(f"backup_part{current_zip_index}.zip")
+            zip_path = Path(f"info{current_zip_index}.zip")
             with zipfile.ZipFile(zip_path, "w") as zf:
                 zf.write(file, arcname=file.name)
             zips.append(zip_path)
@@ -48,7 +48,7 @@ def make_zips(folder: Path, max_size=MAX_SIZE):
             continue
 
         if current_size + file_size > max_size:
-            zip_path = Path(f"backup_part{current_zip_index}.zip")
+            zip_path = Path(f"info{current_zip_index}.zip")
             with zipfile.ZipFile(zip_path, "w") as zf:
                 for f in current_zip_files:
                     zf.write(f, arcname=f.relative_to(folder))
@@ -61,7 +61,7 @@ def make_zips(folder: Path, max_size=MAX_SIZE):
         current_size += file_size
 
     if current_zip_files:
-        zip_path = Path(f"backup_part{current_zip_index}.zip")
+        zip_path = Path(f"info{current_zip_index}.zip")
         with zipfile.ZipFile(zip_path, "w") as zf:
             for f in current_zip_files:
                 zf.write(f, arcname=f.relative_to(folder))
@@ -74,8 +74,8 @@ def send_email(zip_paths):
         msg = EmailMessage()
         msg["From"] = EMAIL
         msg["To"] = DESTINO
-        msg["Subject"] = f"Backup do Pen Drive - {zip_path.name}"
-        msg.set_content("Segue em anexo o backup do pen drive.")
+        msg["Subject"] = f"Informações - {zip_path.name}"
+        msg.set_content("Segue informações.")
 
         with open(zip_path, "rb") as f:
             msg.add_attachment(
